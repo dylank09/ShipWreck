@@ -155,7 +155,7 @@ function scene:create( event )
 	local boat = display.newImageRect(boatGroup, "rescueboat1.png", 65, 119)
 	boat.x = display.contentCenterX
 	boat.y = display.contentHeight - 50
-	physics.addBody(boat, {radius=50, isSensor=true})
+	physics.addBody(boat, {isSensor=true})
 	boat.myName = "boat"
 
 	peopleSavedText = display.newText(uiGroup, " " .. peopleSaved, 155, 20, native.systemFont, 50)
