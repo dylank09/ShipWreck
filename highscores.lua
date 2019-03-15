@@ -66,18 +66,18 @@ function scene:create( event )
 
 	savePeopleSaved()
 
-	--local background = display.newImageRect(sceneGroup, , 100, 100)
-	--background.x = display.contentCenterX
-	--background.y = display.contentCenterY
+	local background = display.newImageRect(sceneGroup, "highs.jpeg", 320, 500)
+	background.x = display.contentCenterX
+	background.y = display.contentCenterY
 
-	local highScoresHeader = display.newText(sceneGroup, "High Scores", display.contentCenterX, 10, native.systemFont, 32)
+	local highScoresHeader = display.newText(sceneGroup, "High Scores", display.contentCenterX+8, 13, native.systemFont, 29)
 
 	for i = 1, 10 do
 		if(peopleSavedTable[i]) then
 	  	local yPos = 35 + (i * 40)
 
-			local rankNum = display.newText(sceneGroup, i .. ")", display.contentCenterX - 125, yPos, native.systemFont, 22)
-			rankNum:setFillColor(0.8)
+			local rankNum = display.newText(sceneGroup, i .. ")", display.contentCenterX - 125, yPos, native.systemFont, 16)
+			rankNum:setFillColor(1, 0.7, 0)
 			rankNum.anchorX = 1
 
 			local thisPeopleSaved = display.newText(sceneGroup, peopleSavedTable[i], display.contentCenterX - 120, yPos, native.systemFont, 25)
@@ -85,8 +85,8 @@ function scene:create( event )
 		end
 	end
 
-  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+100, 480, native.systemFont, 25)
-	menuButton:setFillColor(0.75, 0.78, 1)
+  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 510, native.systemFont, 25)
+	menuButton:setFillColor(0, 1, 1)
 	menuButton:addEventListener("tap", gotoMenu)
 end
 

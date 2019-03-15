@@ -12,17 +12,31 @@ local physics = require("physics")
 physics.start()
 physics.setGravity(0, 0)
 
+local menuButton
+local boatx
+local touchx
 local peopleSaved = 0
 local gameLoopTimer
 local peopleSavedText
 local died = false
 --local highScore = 0
 
+local backg1
+local backg2
+local backg3
+
+
 local debrisTable = {}
+
+_W = display.contentWidth -- Get the width of the screen
+_H = display.contentHeight -- Get the height of the screen
+scrollSpeed = 3.4 -- Set Scroll Speed of background
 
 local backGroup
 local boatGroup
 local uiGroup
+
+local musicTrack
 
 local boat
 
@@ -31,10 +45,11 @@ local function updateText()
 end
 
 local function createDebris()
-  local newDebris = display.newImageRect(boatGroup, "debris.png", 70,70)
+  local newDebris = display.newImageRect(boatGroup, "debris.png", 80,80)
 	table.insert(debrisTable, newDebris)
-  physics.addBody(newDebris, "dynamic", {radius=35, bounce=0.6})
+  physics.addBody(newDebris, "dynamic", {radius=34, bounce=0.6})
   newDebris.myName = "debris"
+  newDebris.alpha = 0.71
 
   local xVal = math.random(3)
 
@@ -61,6 +76,15 @@ local function moveBoat (event)
     boat.touchOffsetX =  event.x - boat.x
 
   elseif("moved" == phase) then
+    boatx = boat.x
+    touchx = event.x
+    if(boat.x < 150) then
+      transition.to( boat, { rotation=-15, time=0} ) --transition=easing.inOutCubic } )
+    elseif (boat.x > 170) then
+      transition.to( boat, { rotation=15, time=0} ) --transition=easing.inOutCubic } )
+    elseif (boat.x > 150 or boat.x < 170) then
+      transition.to( boat, { rotation=0, time=0,} ) --transition=easing.inOutCubic } )
+    end
     boat.x = event.x - boat.touchOffsetX
 
   elseif("ended" == phase or "cancelled" == phase) then
@@ -124,7 +148,29 @@ local function die(event)
   end
 end
 
+local function moveBackground(event)
 
+  -- move backgrounds to the left by scrollSpeed, default is 8
+  backg1.y = backg1.y + scrollSpeed
+  backg2.y = backg2.y + scrollSpeed
+  backg3.y = backg3.y + scrollSpeed
+
+  --create listeners for when backgrounds hit a certain point off screen
+  --move the background to the right when gone
+  if (backg1.y + backg1.contentWidth) > 1100 then
+    backg1:translate( 0, -480*3 )
+  end
+  if (backg2.y + backg2.contentWidth) > 1100 then
+    backg2:translate( 0, -480*3 )
+  end
+  if (backg3.y + backg3.contentWidth) > 1100 then
+    backg3:translate( 0, -480*3 )
+  end
+
+  local function gotoMenu()
+  	composer.gotoScene("menu", {time=800, effect="crossFade"})
+  end
+end
 
 
 -- -----------------------------------------------------------------------------------
@@ -139,6 +185,7 @@ function scene:create( event )
 
 	physics.pause()
 
+
 	backGroup = display.newGroup()
 	sceneGroup:insert(backGroup)
 
@@ -148,11 +195,29 @@ function scene:create( event )
 	uiGroup = display.newGroup()
 	sceneGroup:insert(uiGroup)
 
-	local background = display.newImageRect(backGroup, "background.jpg", 852, 580)
-	background.x = display.contentCenterX
-	background.y = display.contentCenterY
+  -- Add First Background
+  backg1 = display.newImageRect(backGroup, "1.jpg", 320, 480)
+  --bg1:setReferencePoint(display.CenterLeftReferencePoint)
+  backg1.x = display.contentCenterX
+  backg1.y = _H/2
 
-	local boat = display.newImageRect(boatGroup, "rescueboat1.png", 65, 119)
+  -- Add Second Background
+  backg2 = display.newImageRect(backGroup, "1.jpg", 320, 480)
+  --bg2:setReferencePoint(display.CenterLeftReferencePoint)
+  backg2.x = display.contentCenterX
+  backg2.y = backg1.y+480
+
+  -- Add Third Background
+  backg3 = display.newImageRect(backGroup, "1.jpg", 320, 480)
+  --bg3:setReferencePoint(display.CenterLeftReferencePoint)
+  backg3.x = display.contentCenterX
+  backg3.y = backg2.y+480
+
+	--local background = display.newImageRect(backGroup, "curvy.png", 852, 580)
+	--background.x = display.contentCenterX
+	--background.y = display.contentCenterY
+
+	local boat = display.newImageRect(boatGroup, "boatWwaves.png", 95, 124)
 	boat.x = display.contentCenterX
 	boat.y = display.contentHeight - 50
 	physics.addBody(boat, {isSensor=true})
@@ -161,6 +226,12 @@ function scene:create( event )
 	peopleSavedText = display.newText(uiGroup, " " .. peopleSaved, 155, 20, native.systemFont, 50)
 
   boat:addEventListener("touch", moveBoat)
+
+  musicTrack = audio.loadStream("gameSong.mp3")
+
+  --menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 20, native.systemFont, 25)
+  --menuButton:setFillColor(0, 1, 1)
+  --menuButton:addEventListener("tap", gotoMenu)
 
 end
 
@@ -177,8 +248,10 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		physics.start()
+    Runtime:addEventListener( "enterFrame", moveBackground)
 		Runtime:addEventListener("collision", die)
 		gameLoopTimer = timer.performWithDelay(1500, gameLoop, 0)
+    audio.play(musicTrack, {channel=1, loops=1})
 	end
 end
 
@@ -198,6 +271,8 @@ function scene:hide( event )
 		Runtime:removeEventListener("collision", die)
 		physics.pause()
 		composer.removeScene("game")
+    Runtime:removeEventListener("enterFrame", moveBackground)
+    audio.stop(1)
 	end
 end
 
@@ -207,7 +282,7 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-
+  audio.dispose( musicTrack )
 end
 
 
