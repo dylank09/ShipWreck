@@ -38,7 +38,7 @@ local function savePeopleSaved()
 	local file = io.open( filePath, "w" )
 
 	if file then
-	  file:write( json.encode( scoresTable ) )
+	  file:write( json.encode( peopleSavedTable ) )
 	  io.close( file )
 	end
 end
@@ -56,8 +56,8 @@ function scene:create( event )
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 	loadPeopleSaved()
-	table.insert( peopleSavedTable, composer.getVariable( "finalScore" ) )
-  composer.setVariable( "finalScore", 0 )
+	table.insert( peopleSavedTable, composer.getVariable( "finalPeopleSaved" ) )
+  composer.setVariable( "finalPeopleSaved", 0 )
 
 	local function compare( a, b )
 		return a > b
@@ -70,22 +70,22 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local highScoresHeader = display.newText(sceneGroup, "High Scores", display.contentCenterX+8, 13, native.systemFont, 29)
+	local highScoresHeader = display.newText(sceneGroup, "High Scores", display.contentCenterX+8, 13, "ARCADECLASSIC.TTF", 29)
 
 	for i = 1, 10 do
 		if(peopleSavedTable[i]) then
 	  	local yPos = 35 + (i * 40)
 
-			local rankNum = display.newText(sceneGroup, i .. ")", display.contentCenterX - 125, yPos, native.systemFont, 16)
+			local rankNum = display.newText(sceneGroup, i .. ")", display.contentCenterX - 125, yPos, "ARCADECLASSIC.TTF", 16)
 			rankNum:setFillColor(1, 0.7, 0)
 			rankNum.anchorX = 1
 
-			local thisPeopleSaved = display.newText(sceneGroup, peopleSavedTable[i], display.contentCenterX - 120, yPos, native.systemFont, 25)
+			local thisPeopleSaved = display.newText(sceneGroup, peopleSavedTable[i], display.contentCenterX - 120, yPos, "ARCADECLASSIC.TTF", 25)
 			thisPeopleSaved.anchorX = 0
 		end
 	end
 
-  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 510, native.systemFont, 25)
+  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 510, "ARCADECLASSIC.TTF", 25)
 	menuButton:setFillColor(0, 1, 1)
 	menuButton:addEventListener("tap", gotoMenu)
 end

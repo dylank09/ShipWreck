@@ -12,6 +12,7 @@ local physics = require("physics")
 physics.start()
 physics.setGravity(0, 0)
 
+local middle = 160
 local menuButton
 local boatx
 local touchx
@@ -21,12 +22,15 @@ local peopleSavedText
 local died = false
 --local highScore = 0
 
+
+
 local backg1
 local backg2
 local backg3
 
 
 local debrisTable = {}
+local peopleTable = {}
 
 _W = display.contentWidth -- Get the width of the screen
 _H = display.contentHeight -- Get the height of the screen
@@ -47,24 +51,47 @@ end
 local function createDebris()
   local newDebris = display.newImageRect(boatGroup, "debris.png", 80,80)
 	table.insert(debrisTable, newDebris)
-  physics.addBody(newDebris, "dynamic", {radius=34, bounce=0.6})
+  physics.addBody(newDebris, "dynamic", {radius=34, bounce=0.8})
   newDebris.myName = "debris"
   newDebris.alpha = 0.71
 
   local xVal = math.random(3)
 
   if(xVal == 1) then
-    newDebris.x = 45
+    newDebris.x = 60
     newDebris.y = math.random(-250, -50)
   elseif(xVal == 2) then
-    newDebris.x = 158
+    newDebris.x = 160
     newDebris.y = math.random(-250, -50)
   elseif(xVal == 3) then
-    newDebris.x = 270
+    newDebris.x = 260
     newDebris.y = math.random(-250, -50)
   end
   newDebris:setLinearVelocity(0, 200)
   newDebris:applyTorque(math.random(-1, 1))
+end
+
+local function createPerson()
+  local newPerson = display.newImageRect(boatGroup, "person.png", 50,70)
+	table.insert(peopleTable, newPerson)
+  physics.addBody(newPerson, "dynamic", {radius=34, bounce=0.6})
+  newPerson.myName = "person"
+  newPerson.alpha = 0.9
+
+  local xVal = math.random(3)
+
+  if(xVal == 1) then
+    newPerson.x = 60
+    newPerson.y = math.random(-400, -50)
+  elseif(xVal == 2) then
+    newPerson.x = 160
+    newPerson.y = math.random(-400, -50)
+  elseif(xVal == 3) then
+    newPerson.x = 260
+    newPerson.y = math.random(-400, -50)
+  end
+  newPerson:setLinearVelocity(0, 195)
+
 end
 
 local function moveBoat (event)
@@ -76,25 +103,36 @@ local function moveBoat (event)
     boat.touchOffsetX =  event.x - boat.x
 
   elseif("moved" == phase) then
-    boatx = boat.x
-    touchx = event.x
-    if(boat.x < 150) then
-      transition.to( boat, { rotation=-15, time=0} ) --transition=easing.inOutCubic } )
-    elseif (boat.x > 170) then
-      transition.to( boat, { rotation=15, time=0} ) --transition=easing.inOutCubic } )
-    elseif (boat.x > 150 or boat.x < 170) then
-      transition.to( boat, { rotation=0, time=0,} ) --transition=easing.inOutCubic } )
+
+    --if ((boat.x > 150 and boat.x < 170) or (boat.x < 120) or (boat.x > 250)) then
+      --transition.to( boat, { rotation=0, time=0,} ) --transition=easing.inOutCubic } )
+    --elseif(boat.x < 150) then
+      --transition.to( boat, { rotation=-15, time=0} ) --transition=easing.inOutCubic } )
+    --elseif (boat.x > 170) then
+      --transition.to( boat, { rotation=15, time=0} ) --transition=easing.inOutCubic } )
+    --end
+
+    --boat.x = event.x - boat.touchOffsetX
+
+    if (event.x < boat.x and boat.x == 260) then
+      transition.to( boat, { time=200, x=160, transition=easing.inOutCirc } )
+    elseif(event.x > boat.x and boat.x == 60) then
+      transition.to( boat, { time=200, x=160, transition=easing.inOutCirc } )
+    elseif(event.x < boat.x and boat.x == 160) then
+      transition.to( boat, { time=200, x=60, transition=easing.inOutCirc } )
+    elseif(event.x > boat.x and boat.x == 160) then
+      transition.to( boat, { time=200, x=260, transition=easing.inOutCirc } )
     end
-    boat.x = event.x - boat.touchOffsetX
 
   elseif("ended" == phase or "cancelled" == phase) then
+    --transition.to( boat, { rotation=0, time=0} )
     display.currentStage:setFocus(nil)
   end
 
   return true
 end
 
---might not need this anymore
+--*****might not need this anymore*********
 --local function reset()
   --if(peopleSaved > highScore) then
     --highScore = peopleSaved
@@ -111,8 +149,13 @@ end
 --  })
 --end
 
+local function printer()
+  print("Boat moving...")
+end
+
 local function gameLoop()
   createDebris()
+  createPerson()
 
   for i = #debrisTable, 1, -1 do
     local thisDebris = debrisTable[i]
@@ -122,6 +165,15 @@ local function gameLoop()
       table.remove( debrisTable, i )
     end
   end
+
+--  for i = #peopleTable, 1, -1 do
+--    local thisPerson = peopleTable[i]
+
+--    if ( thisPerson.y > 1000 ) then
+--      display.remove( thisPerson )
+--      table.remove( peopleTable, i )
+--    end
+--  end
 end
 
 local function endGame()
@@ -135,15 +187,18 @@ local function die(event)
     local obj2 = event.object2
 
     if((obj1.myName == "boat" and obj2.myName == "debris") or
-       (obj1.myName == "debris" and obj2.myName == "boat")) then
+       (obj1.myName == "debris" and obj2.myName == "boat") and
+       (died == false)) then
+         died = true
+			   timer.performWithDelay(0, endGame)
+    end
 
-      if(died == false) then
-        died = true
-				--boat.isBodyActive = false
-				--boat.alpha = 1
-				timer.performWithDelay(0, endGame)
-        --timer.performWithDelay(800, reset)
-      end
+    if((obj1.myName == "boat" and obj2.myName == "person") or
+       (obj1.myName == "person" and obj2.myName == "boat") and
+       (died == false)) then
+        peopleSaved = peopleSaved + 1
+        updateText()
+        display.remove(obj2)
     end
   end
 end
@@ -157,13 +212,13 @@ local function moveBackground(event)
 
   --create listeners for when backgrounds hit a certain point off screen
   --move the background to the right when gone
-  if (backg1.y + backg1.contentWidth) > 1100 then
+  if (backg1.y + backg1.contentWidth) > 1300 then
     backg1:translate( 0, -480*3 )
   end
-  if (backg2.y + backg2.contentWidth) > 1100 then
+  if (backg2.y + backg2.contentWidth) > 1300 then
     backg2:translate( 0, -480*3 )
   end
-  if (backg3.y + backg3.contentWidth) > 1100 then
+  if (backg3.y + backg3.contentWidth) > 1300 then
     backg3:translate( 0, -480*3 )
   end
 
@@ -223,15 +278,15 @@ function scene:create( event )
 	physics.addBody(boat, {isSensor=true})
 	boat.myName = "boat"
 
-	peopleSavedText = display.newText(uiGroup, " " .. peopleSaved, 155, 20, native.systemFont, 50)
+	peopleSavedText = display.newText(uiGroup, " " .. peopleSaved, 155, 20, "ARCADECLASSIC.TTF", 50)
 
   boat:addEventListener("touch", moveBoat)
 
   musicTrack = audio.loadStream("gameSong.mp3")
 
-  --menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 20, native.systemFont, 25)
-  --menuButton:setFillColor(0, 1, 1)
-  --menuButton:addEventListener("tap", gotoMenu)
+  menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 0, "ARCADECLASSIC.TTF", 25)
+  menuButton:setFillColor(1, 0.3, 0.2)
+  menuButton:addEventListener("tap", endGame)
 
 end
 
@@ -250,7 +305,7 @@ function scene:show( event )
 		physics.start()
     Runtime:addEventListener( "enterFrame", moveBackground)
 		Runtime:addEventListener("collision", die)
-		gameLoopTimer = timer.performWithDelay(1500, gameLoop, 0)
+    gameLoopTimer = timer.performWithDelay(1700, gameLoop, 0)
     audio.play(musicTrack, {channel=1, loops=1})
 	end
 end
