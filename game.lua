@@ -41,6 +41,8 @@ local boatGroup
 local uiGroup
 
 local musicTrack
+local dingSound
+local crashSound
 
 local boat
 
@@ -190,6 +192,7 @@ local function die(event)
        (obj1.myName == "debris" and obj2.myName == "boat") and
        (died == false)) then
          died = true
+         audio.play(crashSound)
 			   timer.performWithDelay(0, endGame)
     end
 
@@ -198,6 +201,7 @@ local function die(event)
        (died == false)) then
         peopleSaved = peopleSaved + 1
         updateText()
+        audio.play(dingSound)
         display.remove(obj2)
     end
   end
@@ -287,6 +291,9 @@ function scene:create( event )
   menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 0, "ARCADECLASSIC.TTF", 25)
   menuButton:setFillColor(1, 0.3, 0.2)
   menuButton:addEventListener("tap", endGame)
+
+  dingSound = audio.loadSound("ding.mp3")
+  crashSound = audio.loadSound("crash.mp3")
 
 end
 
