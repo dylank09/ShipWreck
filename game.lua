@@ -27,7 +27,8 @@ local died = false
 local backg1
 local backg2
 local backg3
-
+local left
+local right
 
 local debrisTable = {}
 local peopleTable = {}
@@ -275,6 +276,16 @@ function scene:create( event )
 	--local background = display.newImageRect(backGroup, "curvy.png", 852, 580)
 	--background.x = display.contentCenterX
 	--background.y = display.contentCenterY
+
+  left = display.newImageRect(boatGroup, "1.jpg", 160, 600)
+  left.x = display.contentCenterX-80
+  left.y = display.contentCenterY
+  left.alpha = 0
+
+  right = display.newImageRect(boatGroup, "1.jpg", 160, 600)
+  right.x = display.contentCenterX+80
+  right.y = display.contentCenterY
+  right.alpha = 0
 
 	local boat = display.newImageRect(boatGroup, "boatWwaves.png", 95, 124)
 	boat.x = display.contentCenterX

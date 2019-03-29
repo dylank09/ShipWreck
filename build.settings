@@ -5,6 +5,19 @@
 
 settings =
 {
+
+	window =
+	{
+		defaultViewWidth = 320,
+		defaultViewHeight = 480,
+		resizable = true,
+		enableCloseButton = true,
+		enableMinimizeButton = true,
+		enableMaximizeButton = true,
+		suspendWhenMinimized = true,
+	},
+
+
 	orientation =
 	{
 		-- Supported values for orientation:
@@ -18,9 +31,14 @@ settings =
 	--
 	android =
 	{
+
 		usesPermissions =
 		{
 			"android.permission.INTERNET",
+			"android.permission.WRITE_EXTERNAL_STORAGE",
+			--"android.permission.ACCESS_FINE_LOCATION",
+			--"android.permission.ACCESS_COARSE_LOCATION",
+
 		},
 	},
 
