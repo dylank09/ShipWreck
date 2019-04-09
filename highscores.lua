@@ -43,7 +43,21 @@ local function savePeopleSaved()
 	end
 end
 
-local function gotoMenu()
+local function keyPressed( event )
+	local key = event.keyName
+	if((key == "enter" or key == "back" or key == "space" or key == "p")and event.phase == "down") then
+    gotoMenu()
+  end
+  -- If the "back" key was pressed on Android, prevent it from backing out of the app
+  if ( key == "back" ) then
+    if ( system.getInfo("platform") == "android" ) then
+      return true
+    end
+  end
+  return false
+end
+
+function gotoMenu()
 	composer.gotoScene("menu", {time=800, effect="crossFade"})
 end
 -- -----------------------------------------------------------------------------------
@@ -66,27 +80,27 @@ function scene:create( event )
 
 	savePeopleSaved()
 
-	local background = display.newImageRect(sceneGroup, "highs.jpeg", 320, 500)
-	background.x = display.contentCenterX
-	background.y = display.contentCenterY
+	--local background = display.newImageRect(sceneGroup, "highs.jpeg", 320, 500)
+	--background.x = display.contentCenterX
+	--background.y = display.contentCenterY
 
-	local highScoresHeader = display.newText(sceneGroup, "High Scores", display.contentCenterX+8, 13, "ARCADECLASSIC.TTF", 29)
+	local highScoresHeader = display.newText(sceneGroup, "High Scores", display.contentCenterX+8, 13, "arcadefont.ttf", 29)
 
 	for i = 1, 10 do
 		if(peopleSavedTable[i]) then
 	  	local yPos = 35 + (i * 40)
 
-			local rankNum = display.newText(sceneGroup, i .. ")", display.contentCenterX - 125, yPos, "ARCADECLASSIC.TTF", 16)
+			local rankNum = display.newText(sceneGroup, i .. ")", display.contentCenterX - 125, yPos, "arcadefont.ttf", 16)
 			rankNum:setFillColor(1, 0.7, 0)
 			rankNum.anchorX = 1
 
-			local thisPeopleSaved = display.newText(sceneGroup, peopleSavedTable[i], display.contentCenterX - 120, yPos, "ARCADECLASSIC.TTF", 25)
+			local thisPeopleSaved = display.newText(sceneGroup, peopleSavedTable[i], display.contentCenterX - 120, yPos, "arcadefont.ttf", 25)
 			thisPeopleSaved.anchorX = 0
 		end
 	end
 
-  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 510, "ARCADECLASSIC.TTF", 25)
-	menuButton:setFillColor(0, 1, 1)
+  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 510, "arcadefont.ttf", 25)
+	menuButton:setFillColor(0.82, 0.86, 1 )
 	menuButton:addEventListener("tap", gotoMenu)
 end
 
@@ -102,7 +116,7 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-
+		Runtime:addEventListener( "key", keyPressed )
 	end
 end
 
@@ -115,7 +129,7 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-
+		Runtime:removeEventListener("key", keyPressed)
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 		composer.removeScene("highscores") --cleans up
