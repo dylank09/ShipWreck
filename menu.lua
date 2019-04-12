@@ -54,7 +54,7 @@ function scene:create( event )
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
-	local background = display.newImageRect(sceneGroup, "menupage.jpg", 320, 600)
+	local background = display.newImageRect(sceneGroup, "menupage.png", 320, 600)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
@@ -70,9 +70,9 @@ function scene:create( event )
 	storyLineMessage.y = display.contentCenterY - 6
 	storyLineMessage.isVisible = false
 
-	local title = display.newImageRect(sceneGroup, "title1.png", 240,115)
+	local title = display.newImageRect(sceneGroup, "title1.png", 220,120)
 	title.x = display.contentCenterX
-	title.y = 50
+	title.y = 45
 
 	local playButton = display.newText( sceneGroup, "Play", display.contentCenterX, 390, "arcadefont.ttf", 32 )
 	playButton:setFillColor( 0.82, 0.86, 1 )
