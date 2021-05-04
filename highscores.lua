@@ -84,22 +84,22 @@ function scene:create( event )
 	--background.x = display.contentCenterX
 	--background.y = display.contentCenterY
 
-	local highScoresHeader = display.newText(sceneGroup, "High Scores", display.contentCenterX+8, 13, "arcadefont.ttf", 29)
+	local highScoresHeader = display.newText(sceneGroup, "High Scores", display.contentCenterX+8, 13, "media/arcadefont.ttf", 29)
 
 	for i = 1, 10 do
 		if(peopleSavedTable[i]) then
 	  	local yPos = 35 + (i * 40)
 
-			local rankNum = display.newText(sceneGroup, i .. ")", display.contentCenterX - 125, yPos, "arcadefont.ttf", 16)
+			local rankNum = display.newText(sceneGroup, i .. ")", display.contentCenterX - 125, yPos, "media/arcadefont.ttf", 16)
 			rankNum:setFillColor(1, 0.7, 0)
 			rankNum.anchorX = 1
 
-			local thisPeopleSaved = display.newText(sceneGroup, peopleSavedTable[i], display.contentCenterX - 120, yPos, "arcadefont.ttf", 25)
+			local thisPeopleSaved = display.newText(sceneGroup, peopleSavedTable[i], display.contentCenterX - 120, yPos, "media/arcadefont.ttf", 25)
 			thisPeopleSaved.anchorX = 0
 		end
 	end
 
-  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 510, "arcadefont.ttf", 25)
+  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 510, "media/arcadefont.ttf", 25)
 	menuButton:setFillColor(0.82, 0.86, 1 )
 	menuButton:addEventListener("tap", gotoMenu)
 end

@@ -23,7 +23,7 @@ local function keyPressed( event )
 end
 
 function gotoMenu()
-	composer.gotoScene("menu", {time=600, effect="flipFadeOutIn"})
+	composer.gotoScene("menu", {time=200, effect="flipFadeOutIn"})
 end
 
 -- -----------------------------------------------------------------------------------
@@ -36,11 +36,11 @@ function scene:create( event )
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
-	local background = display.newImageRect(sceneGroup, "howToPlay.jpg", 320, 600)
+	local background = display.newImageRect(sceneGroup, "media/howToPlay.jpg", 320, 600)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+100, 490, "arcadefont.ttf", 25)
+  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+100, 490, "media/arcadefont.ttf", 25)
 	menuButton:setFillColor(0.82, 0.86, 1)
 	menuButton:addEventListener("tap", gotoMenu)
 end

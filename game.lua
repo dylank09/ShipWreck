@@ -76,7 +76,7 @@ local update = function() --this function is called on everytime the updateTimer
 end
 
 local function createDebris()       -- spawn debris function. Also removes debris when gone too far off screen
-  local newDebris = display.newImageRect(boatGroup, "debris.png", 66, 62)
+  local newDebris = display.newImageRect(boatGroup, "media/debris.png", 66, 62)
 	table.insert(debrisTable, newDebris)
   physics.addBody(newDebris, "dynamic", {radius=30, bounce=0.8})
   newDebris.myName = "debris"
@@ -99,7 +99,7 @@ local function createDebris()       -- spawn debris function. Also removes debri
 end
 
 local function createPerson()  --create a person function (similar to createDebris function) with the same channel choosing idea as above
-  local newPerson = display.newImageRect(boatGroup, "person.png", 48,66)
+  local newPerson = display.newImageRect(boatGroup, "media/person.png", 48,66)
 	table.insert(peopleTable, newPerson)
   physics.addBody(newPerson, "dynamic", {radius=32, bounce=0.6})
   newPerson.myName = "person"
@@ -153,35 +153,40 @@ local function tapMove(event)   --tap to move boat function
   if(event.x < 160) then
     if (boat.x == 260) then
       transition.to( boat, { time=200, x=160, transition=easing.inOutCirc } )      --same as above function it slides the boat over
-      transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } )   --rotates it in direction it is going
+      -- transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } )   --rotates it in direction it is going
     elseif(boat.x == 160) then
       transition.to( boat, { time=200, x=60, transition=easing.inOutCirc } )
-      transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } )
+      -- transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } )
     end
   elseif(event.x > 160) then
     if(boat.x == 60) then
       transition.to( boat, { time=200, x=160, transition=easing.inOutCirc } )
-      transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } )
+      -- transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } )
     elseif(boat.x == 160) then
       transition.to( boat, { time=200, x=260, transition=easing.inOutCirc } )
-      transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } )
+      -- transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } )
     end
   end
-  transition.to( boat, { rotation=0, time=1000, transition=easing.inOutCubic } )
+
+
 end
 
 local function keyPressed( event )   --function for playing the game on the laptop is user presses left or right keys
   local key = event.keyName
   if(key == "left" and event.phase == "down") then   --the "down" part of this if statement is vital
     if(boat.x > 60) then                             --it will only move the boat to the left when the key is pressed down and not when left up
-      boat.x = boat.x - 100
+      transition.to( boat, { time=200, x=boat.x-100, transition=easing.inOutCirc } )      --same as above function it slides the boat over
+      transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } ) 
     end
   elseif(key == "right" and event.phase == "down") then
     if(boat.x < 260) then
-      boat.x = boat.x + 100                         --move to the right
+      transition.to( boat, { time=200, x=boat.x+100, transition=easing.inOutCirc } )      --same as above function it slides the boat over
+      transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } ) 
     end
   end
-
+  if((key == "left" or key == "right") and event.phase == "up") then
+    transition.to( boat, { rotation=0, time=250, transition=easing.inOutCubic } )
+  end
 
   if ( key == "back" ) then                                    -- if the "back" key was pressed on android prevent it from backing out of the app
     if ( system.getInfo("platform") == "android" ) then
@@ -261,7 +266,7 @@ local function moveBackground(event) --scroll background function
 end
 
 local function gotoMenu()
-  	composer.gotoScene("menu", {time=600, effect="crossFade"})
+  	composer.gotoScene("menu", {time=500, effect="crossFade"})
 end
 
 
@@ -288,52 +293,52 @@ function scene:create( event )
 	sceneGroup:insert(uiGroup)
 
   -- ddd first background
-  backg1 = display.newImageRect(backGroup, "1.png", 320, 480)
+  backg1 = display.newImageRect(backGroup, "media/water.png", 320, 480)
   backg1.x = display.contentCenterX
   backg1.y = _H/2
 
   -- add second background
-  backg2 = display.newImageRect(backGroup, "1.png", 320, 480)
+  backg2 = display.newImageRect(backGroup, "media/water.png", 320, 480)
   backg2.x = display.contentCenterX
   backg2.y = backg1.y+480
 
   -- add third background
-  backg3 = display.newImageRect(backGroup, "1.png", 320, 480)
+  backg3 = display.newImageRect(backGroup, "media/water.png", 320, 480)
   backg3.x = display.contentCenterX
   backg3.y = backg2.y+480
 
-  local left = display.newImageRect(boatGroup, "1.png", 160, 600)  --invisible image for hit detection in order to move the boat left
+  local left = display.newImageRect(boatGroup, "media/water.png", 160, 600)  --invisible image for hit detection in order to move the boat left
   left.x = display.contentCenterX-80
   left.y = display.contentCenterY
   left.isVisible = false
   left.isHitTestable = true
   left:addEventListener("tap", tapMove)
 
-  local right = display.newImageRect(boatGroup, "1.png", 160, 600)  --invisible image for hit detection in order to move the boat right
+  local right = display.newImageRect(boatGroup, "media/water.png", 160, 600)  --invisible image for hit detection in order to move the boat right
   right.x = display.contentCenterX+80
   right.y = display.contentCenterY
   right.isVisible = false
   right.isHitTestable = true
   right:addEventListener("tap", tapMove)
 
-	boat = display.newImageRect(boatGroup, "boat.png", 60, 125)
+	boat = display.newImageRect(boatGroup, "media/boat.png", 60, 125)
 	boat.x = display.contentCenterX
 	boat.y = display.contentHeight - 50
 	physics.addBody(boat, {isSensor=true})  -- sensor true so that it detects collisions always
 	boat.myName = "boat"
 
-	peopleSavedText = display.newText(uiGroup, " " .. peopleSaved, 155, 20, "arcadefont.ttf", 50)
+	peopleSavedText = display.newText(uiGroup, " " .. peopleSaved, 155, 20, "media/arcadefont.ttf", 50)
 
   boat:addEventListener("touch", moveBoat) --touch listener for movement
 
-  musicTrack = audio.loadStream("gameSong.mp3") --game soundrtrack
+  musicTrack = audio.loadStream("media/gameSong.mp3") --game soundrtrack
 
-  menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 0, "arcadefont.ttf", 25)
+  menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 0, "media/arcadefont.ttf", 25)
   menuButton:setFillColor(1, 0.3, 0.2)
   menuButton:addEventListener("tap", endGame)
 
-  dingSound = audio.loadSound("ding.wav")
-  crashSound = audio.loadSound("crash.wav")
+  dingSound = audio.loadSound("media/ding.wav")
+  crashSound = audio.loadSound("media/crash.wav")
 
 end
 
