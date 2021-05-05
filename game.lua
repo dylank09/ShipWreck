@@ -65,7 +65,7 @@ local function gameSpeed(peopleSaved) --function to increase scroll speed and ve
 end
 
 local update = function() --this function is called on everytime the updateTimer goes off. This changes the delay of the spawnTimer timer.
-	if (peopleSaved >= 14) then
+	if (peopleSaved >= 13) then
 		seconds = 920                  --fast...
 		spawnTimer._delay = seconds
   end
@@ -76,11 +76,11 @@ local update = function() --this function is called on everytime the updateTimer
 end
 
 local function createDebris()       -- spawn debris function. Also removes debris when gone too far off screen
-  local newDebris = display.newImageRect(boatGroup, "media/debris.png", 66, 62)
+  local newDebris = display.newImageRect(boatGroup, "media/debris.png", 56, 52)
 	table.insert(debrisTable, newDebris)
-  physics.addBody(newDebris, "dynamic", {radius=30, bounce=0.8})
+  physics.addBody(newDebris, "dynamic", {radius=24, bounce=0.8})
   newDebris.myName = "debris"
-  newDebris.alpha = 0.70
+  newDebris.alpha = 0.8
 
   local xVal = math.random(3)
 
@@ -99,11 +99,11 @@ local function createDebris()       -- spawn debris function. Also removes debri
 end
 
 local function createPerson()  --create a person function (similar to createDebris function) with the same channel choosing idea as above
-  local newPerson = display.newImageRect(boatGroup, "media/person.png", 48,66)
+  local newPerson = display.newImageRect(boatGroup, "media/person.png", 46,64)
 	table.insert(peopleTable, newPerson)
-  physics.addBody(newPerson, "dynamic", {radius=32, bounce=0.6})
+  physics.addBody(newPerson, "dynamic", {radius=30, bounce=0.6})
   newPerson.myName = "person"
-  newPerson.alpha = 0.9
+  newPerson.alpha = 0.8
 
   local xVal = math.random(3)
 
@@ -117,6 +117,7 @@ local function createPerson()  --create a person function (similar to createDebr
     newPerson.x = 260
     newPerson.y = math.random(-450, -90)
   end
+
   newPerson:setLinearVelocity(0, velocity)
 
 end
@@ -127,23 +128,28 @@ local function moveBoat (event) --touch to move boat function
 
   if("began" == phase) then
     display.currentStage:setFocus(boat)
+
   elseif("moved" == phase) then
     if (event.x < event.xStart and boat.x == 260) then
       transition.to( boat, { time=200, x=160, transition=easing.inOutCirc } )           --this function deals with the sliding action done by the user.
       transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } )   --this rotates the boat in the direction of slide
+
     elseif(event.x > event.xStart and boat.x == 60) then
       transition.to( boat, { time=200, x=160, transition=easing.inOutCirc } )
       transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } )
+
     elseif(event.x < event.xStart and boat.x == 160) then
       transition.to( boat, { time=200, x=60, transition=easing.inOutCirc } )
       transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } )
+
     elseif(event.x > event.xStart and boat.x == 160) then
       transition.to( boat, { time=200, x=260, transition=easing.inOutCirc } )
       transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } )
+
     end
 
   elseif("ended" == phase or "cancelled" == phase) then
-    transition.to( boat, { rotation=0, time=250, transition=easing.inOutCubic } )   --this points the boat straight ahead once the users finger is lifted off
+    transition.to( boat, { rotation=0, time=200, transition=easing.inOutCubic } )   --this points the boat straight ahead once the users finger is lifted off
     display.currentStage:setFocus(nil)
   end
   return true
@@ -153,18 +159,18 @@ local function tapMove(event)   --tap to move boat function
   if(event.x < 160) then
     if (boat.x == 260) then
       transition.to( boat, { time=200, x=160, transition=easing.inOutCirc } )      --same as above function it slides the boat over
-      -- transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } )   --rotates it in direction it is going
+  
     elseif(boat.x == 160) then
       transition.to( boat, { time=200, x=60, transition=easing.inOutCirc } )
-      -- transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } )
+
     end
   elseif(event.x > 160) then
     if(boat.x == 60) then
       transition.to( boat, { time=200, x=160, transition=easing.inOutCirc } )
-      -- transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } )
+
     elseif(boat.x == 160) then
       transition.to( boat, { time=200, x=260, transition=easing.inOutCirc } )
-      -- transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } )
+
     end
   end
 
@@ -174,16 +180,17 @@ end
 local function keyPressed( event )   --function for playing the game on the laptop is user presses left or right keys
   local key = event.keyName
   if(key == "left" and event.phase == "down") then   --the "down" part of this if statement is vital
-    if(boat.x > 60) then                             --it will only move the boat to the left when the key is pressed down and not when left up
+    if(boat.x > 65) then                             --it will only move the boat to the left when the key is pressed down and not when left up
       transition.to( boat, { time=200, x=boat.x-100, transition=easing.inOutCirc } )      --same as above function it slides the boat over
       transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } ) 
     end
   elseif(key == "right" and event.phase == "down") then
-    if(boat.x < 260) then
+    if(boat.x < 255) then
       transition.to( boat, { time=200, x=boat.x+100, transition=easing.inOutCirc } )      --same as above function it slides the boat over
       transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } ) 
     end
   end
+
   if((key == "left" or key == "right") and event.phase == "up") then
     transition.to( boat, { rotation=0, time=250, transition=easing.inOutCubic } )
   end
@@ -198,17 +205,29 @@ local function keyPressed( event )   --function for playing the game on the lapt
 end
 
 local function gameLoop()
-  createPerson()
-  createDebris()
 
+  for i = #peopleTable, 1, -1 do
+    local thisPerson = peopleTable[i]
+
+    if ( thisPerson.y > 700) then
+      display.remove( thisPerson )   -- remove debris gone too far
+      table.remove( peopleTable, i )
+    end
+  end
+  
+  createPerson()
+  
   for i = #debrisTable, 1, -1 do
     local thisDebris = debrisTable[i]
 
-    if ( thisDebris.y > 650) then
+    if ( thisDebris.y > 700) then
       display.remove( thisDebris )   -- remove debris gone too far
       table.remove( debrisTable, i )
     end
   end
+
+  createDebris()
+
 end
 
 local function boatDie(event)
@@ -217,7 +236,7 @@ end                              --this adds an excellent visual effect
 
 local function endGame()
   composer.setVariable("finalPeopleSaved", peopleSaved)
-	composer.gotoScene("highscores", {time=600, effect="crossFade"})  --go to highscores when dead or when menu is clicked
+	composer.gotoScene("highscores", {time=400, effect="crossFade"})  --go to highscores when dead or when menu is clicked
 end
 
 local function die(event)           --function that deals with collision. the boat hit what and what to do as a result of that
@@ -239,7 +258,7 @@ local function die(event)           --function that deals with collision. the bo
         peopleSaved = peopleSaved + 1  --increase score - people saved
         updateText() --call on function
         audio.play(dingSound)  --ding soundtrack is played to indicate sucessful person saved
-        display.remove(obj2) -- remove from display
+        obj2.isVisible = false
         gameSpeed(peopleSaved)  --call on function that increases scroll speed and velocity depending on amount of people saved
     end
   end
@@ -266,7 +285,7 @@ local function moveBackground(event) --scroll background function
 end
 
 local function gotoMenu()
-  	composer.gotoScene("menu", {time=500, effect="crossFade"})
+  	composer.gotoScene("menu", {time=400, effect="crossFade"})
 end
 
 
@@ -321,11 +340,12 @@ function scene:create( event )
   right.isHitTestable = true
   right:addEventListener("tap", tapMove)
 
-	boat = display.newImageRect(boatGroup, "media/boat.png", 60, 125)
+	boat = display.newImageRect(boatGroup, "media/boat.png", 50, 115)
 	boat.x = display.contentCenterX
 	boat.y = display.contentHeight - 50
 	physics.addBody(boat, {isSensor=true})  -- sensor true so that it detects collisions always
 	boat.myName = "boat"
+  boat.alpha = 0.9
 
 	peopleSavedText = display.newText(uiGroup, " " .. peopleSaved, 155, 20, "media/arcadefont.ttf", 50)
 
