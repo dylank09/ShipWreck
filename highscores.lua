@@ -58,7 +58,7 @@ local function keyPressed( event )
 end
 
 function gotoMenu()
-	composer.gotoScene("menu", {time=800, effect="crossFade"})
+	composer.gotoScene("menu", {time=400, effect="crossFade"})
 end
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -71,18 +71,15 @@ function scene:create( event )
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 	loadPeopleSaved()
 	table.insert( peopleSavedTable, composer.getVariable( "finalPeopleSaved" ) )
-  composer.setVariable( "finalPeopleSaved", 0 )
+  	composer.setVariable( "finalPeopleSaved", 0 )
 
 	local function compare( a, b )
 		return a > b
-  end
-  table.sort( peopleSavedTable, compare )
+	end
+
+	table.sort( peopleSavedTable, compare )
 
 	savePeopleSaved()
-
-	--local background = display.newImageRect(sceneGroup, "highs.jpeg", 320, 500)
-	--background.x = display.contentCenterX
-	--background.y = display.contentCenterY
 
 	local highScoresHeader = display.newText(sceneGroup, "High Scores", display.contentCenterX+8, 13, "media/arcadefont.ttf", 29)
 
@@ -99,7 +96,7 @@ function scene:create( event )
 		end
 	end
 
-  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 510, "media/arcadefont.ttf", 25)
+  	local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 510, "media/arcadefont.ttf", 25)
 	menuButton:setFillColor(0.82, 0.86, 1 )
 	menuButton:addEventListener("tap", gotoMenu)
 end

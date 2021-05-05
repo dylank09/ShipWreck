@@ -78,7 +78,7 @@ end
 local function createDebris()       -- spawn debris function. Also removes debris when gone too far off screen
   local newDebris = display.newImageRect(boatGroup, "media/debris.png", 56, 52)
 	table.insert(debrisTable, newDebris)
-  physics.addBody(newDebris, "dynamic", {radius=24, bounce=0.8})
+  physics.addBody(newDebris, "dynamic", {radius=24, bounce=1})
   newDebris.myName = "debris"
   newDebris.alpha = 0.8
 
@@ -101,7 +101,7 @@ end
 local function createPerson()  --create a person function (similar to createDebris function) with the same channel choosing idea as above
   local newPerson = display.newImageRect(boatGroup, "media/person.png", 46,64)
 	table.insert(peopleTable, newPerson)
-  physics.addBody(newPerson, "dynamic", {radius=30, bounce=0.6})
+  physics.addBody(newPerson, "dynamic", {radius=30, bounce=1, friction=1})
   newPerson.myName = "person"
   newPerson.alpha = 0.8
 
@@ -180,19 +180,27 @@ end
 local function keyPressed( event )   --function for playing the game on the laptop is user presses left or right keys
   local key = event.keyName
   if(key == "left" and event.phase == "down") then   --the "down" part of this if statement is vital
-    if(boat.x > 65) then                             --it will only move the boat to the left when the key is pressed down and not when left up
-      transition.to( boat, { time=200, x=boat.x-100, transition=easing.inOutCirc } )      --same as above function it slides the boat over
-      transition.to( boat, { rotation=-10, time=180, transition=easing.inOutCubic } ) 
+    if(boat.x == 160) then                             --it will only move the boat to the left when the key is pressed down and not when left up
+      transition.to( boat, { time=200, x=60, transition=easing.inOutCirc } )      --same as above function it slides the boat over
+      transition.to( boat, { rotation=-10, time=200, transition=easing.inOutCubic } ) 
+    end
+    if(boat.x == 260) then                             --it will only move the boat to the left when the key is pressed down and not when left up
+      transition.to( boat, { time=200, x=160, transition=easing.inOutCirc } )      --same as above function it slides the boat over
+      transition.to( boat, { rotation=-10, time=200, transition=easing.inOutCubic } ) 
     end
   elseif(key == "right" and event.phase == "down") then
-    if(boat.x < 255) then
-      transition.to( boat, { time=200, x=boat.x+100, transition=easing.inOutCirc } )      --same as above function it slides the boat over
-      transition.to( boat, { rotation=10, time=180, transition=easing.inOutCubic } ) 
+    if(boat.x == 160) then
+      transition.to( boat, { time=200, x=260, transition=easing.inOutCirc } )      --same as above function it slides the boat over
+      transition.to( boat, { rotation=10, time=200, transition=easing.inOutCubic } ) 
+    end
+    if(boat.x == 60) then
+      transition.to( boat, { time=200, x=160, transition=easing.inOutCirc } )      --same as above function it slides the boat over
+      transition.to( boat, { rotation=10, time=200, transition=easing.inOutCubic } ) 
     end
   end
 
   if((key == "left" or key == "right") and event.phase == "up") then
-    transition.to( boat, { rotation=0, time=250, transition=easing.inOutCubic } )
+    transition.to( boat, { rotation=0, time=200, transition=easing.inOutCubic } )
   end
 
   if ( key == "back" ) then                                    -- if the "back" key was pressed on android prevent it from backing out of the app
@@ -205,17 +213,9 @@ local function keyPressed( event )   --function for playing the game on the lapt
 end
 
 local function gameLoop()
-
-  for i = #peopleTable, 1, -1 do
-    local thisPerson = peopleTable[i]
-
-    if ( thisPerson.y > 700) then
-      display.remove( thisPerson )   -- remove debris gone too far
-      table.remove( peopleTable, i )
-    end
-  end
   
   createPerson()
+  createDebris()
   
   for i = #debrisTable, 1, -1 do
     local thisDebris = debrisTable[i]
@@ -224,9 +224,22 @@ local function gameLoop()
       display.remove( thisDebris )   -- remove debris gone too far
       table.remove( debrisTable, i )
     end
-  end
 
-  createDebris()
+    for j = #peopleTable, 1, -1 do
+      local thisPerson = peopleTable[j]
+
+      if( thisPerson.x == thisDebris.x and math.abs(thisPerson.y - thisDebris.y) <= 40 ) then
+        thisPerson.y = thisPerson.y - 60
+      end
+
+      if ( thisPerson.y > 700) then
+        display.remove( thisPerson )   -- remove debris gone too far
+        table.remove( peopleTable, i )
+      end
+
+    end
+    
+  end
 
 end
 
@@ -302,6 +315,8 @@ function scene:create( event )
 
 	physics.pause()
 
+  math.randomseed( os.time() )
+
 	backGroup = display.newGroup()
 	sceneGroup:insert(backGroup)
 
@@ -354,7 +369,7 @@ function scene:create( event )
   musicTrack = audio.loadStream("media/gameSong.mp3") --game soundrtrack
 
   menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 0, "media/arcadefont.ttf", 25)
-  menuButton:setFillColor(1, 0.3, 0.2)
+  menuButton:setFillColor(0.82, 0.86, 1 )
   menuButton:addEventListener("tap", endGame)
 
   dingSound = audio.loadSound("media/ding.wav")

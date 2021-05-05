@@ -81,13 +81,23 @@ function scene:create( event )
 	CI.y = display.contentCenterY-60
 	CI:scale(1, 1)
 	CI:play()
+	CI.isVisible = false
 
 	CI:addEventListener("tap", CIstory)
 	
 	storyLineMessage = display.newImageRect(sceneGroup, "media/CIbox.png", 210, 110)
 	storyLineMessage.x = display.contentCenterX + 2
 	storyLineMessage.y = display.contentCenterY - 6
-	storyLineMessage.isVisible = true
+	
+	local filePath = system.pathForFile("scores.json", system.DocumentsDirectory)
+
+	local fh = io.open( filePath, "r")
+
+	if (fh) then
+		storyLineMessage.isVisible = false
+	else
+		storyLineMessage.isVisible = true
+	end
 	
 	storyLineMessage:addEventListener("tap", CIstory)
 	
