@@ -89,15 +89,7 @@ function scene:create( event )
 	storyLineMessage.x = display.contentCenterX + 2
 	storyLineMessage.y = display.contentCenterY - 6
 	
-	local filePath = system.pathForFile("scores.json", system.DocumentsDirectory)
-
-	local fh = io.open( filePath, "r")
-
-	if (fh) then
-		storyLineMessage.isVisible = false
-	else
-		storyLineMessage.isVisible = true
-	end
+	storyLineMessage.isVisible = true
 	
 	storyLineMessage:addEventListener("tap", CIstory)
 	

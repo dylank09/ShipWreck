@@ -3,6 +3,14 @@ local composer = require( "composer" )
 
 local scene = composer.newScene()
 
+local volumeOnOffButton
+
+local volume
+
+local json = require("json")
+
+local fp = system.pathForFile("volume.json", system.DocumentsDirectory)
+
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -26,6 +34,28 @@ function gotoMenu()
 	composer.gotoScene("menu", {time=200, effect="flipFadeOutIn"})
 end
 
+function volumeOnOff()
+	
+	local file = io.open( fp, "w" )
+	
+	if file then
+		if(audio.getVolume() > 0) then
+			volume = 0
+			audio.setVolume(volume)
+			volumeOnOffButton.text = "Volume : OFF"
+			file:write( json.encode( volume ) )
+		else
+			volume = 1
+			audio.setVolume(volume)
+			volumeOnOffButton.text = "Volume : ON"
+			file:write( json.encode( volume ) )
+		end
+
+		io.close(file)
+	end
+
+end
+
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -40,9 +70,21 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-  local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+100, 490, "media/arcadefont.ttf", 25)
-	menuButton:setFillColor(0.82, 0.86, 1)
+  	local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+100, 500, "media/arcadefont.ttf", 25)
+	menuButton:setFillColor(0, 0, 0)
 	menuButton:addEventListener("tap", gotoMenu)
+
+	volumeOnOffButton = display.newText(sceneGroup, "", display.contentCenterX-80, 500, "media/arcadefont.ttf", 25)
+	volumeOnOffButton:setFillColor(0, 0, 0)
+	volumeOnOffButton:addEventListener("tap", volumeOnOff)
+
+	if(audio.getVolume() > 0) then
+		volumeOnOffButton.text = "Volume : ON"
+
+	else
+		volumeOnOffButton.text = "Volume : OFF"
+	end
+
 end
 
 

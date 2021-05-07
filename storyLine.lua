@@ -28,8 +28,8 @@ local function keyPressed( event )
   return false
 end
 
-function gotoMenu()
-	composer.gotoScene("menu", {time=200, effect="flipFadeOutIn"})
+function gotoHowToPlay()
+	composer.gotoScene("howToPlay", {time=200, effect="flipFadeOutIn"})
 end
 
 -- -----------------------------------------------------------------------------------
@@ -53,14 +53,16 @@ function scene:create( event )
 	CI:scale(1, 1)
 	CI:play()
 
+	audio.setVolume(1)
+
 	local options = {
 		scene = sceneGroup,
-		text = "A scientific expedition \n through the Norwegian Sea \n has gone horribly wrong. \n\n\n Help Captain Ishka \n rescue the survivors \n and avoid the debris. \n\n\n\n It's a race against time !",
+		text = " A  scientific  expedition \n through  the  Norwegian  Sea \n has  gone  horribly  wrong. \n\n\n Help  Captain  Ishka \n rescue  the  survivors \n and  avoid  the  debris. \n\n\n\n It's  a  race  against  time !",
 		x = display.contentCenterX, 
 		y = 280, 
 		font = "media/arcadefont.ttf",
-		fontSize = 20,
-		align = "center"
+		fontSize = 21,
+		align = "left"
 	}
 
 	storyText = display.newText( options )
@@ -68,7 +70,7 @@ function scene:create( event )
 
   	local menuButton = display.newText(sceneGroup, "Next", display.contentCenterX+100, 490, "media/arcadefont.ttf", 26)
 	menuButton:setFillColor( 0.82, 0.86, 0.6 )
-	menuButton:addEventListener("tap", gotoMenu)
+	menuButton:addEventListener("tap", gotoHowToPlay)
 end
 
 
@@ -101,7 +103,8 @@ function scene:hide( event )
 		transition.to( CI, { time=200,
 							 x=display.contentCenterX+100,
 							 y=display.contentCenterY-60, 
-							 transition=easing.inOutCirc } )
+							 transition=easing.inOutCirc,
+							 alpha = 0 } )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
