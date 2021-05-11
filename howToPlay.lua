@@ -134,11 +134,11 @@ function scene:show( event )
 	
 		if(audio.getVolume() > 0) then
 			volumeOnOffButton.text = "Volume : ON"
-	
+			audio.setVolume(1)
 		else
 			volumeOnOffButton.text = "Volume : OFF"
+			audio.setVolume(0)
 		end
-	
 
 	end
 end

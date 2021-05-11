@@ -62,13 +62,13 @@ function scene:create( event )
 	title.x = display.contentCenterX
 	title.y = 45
 
-	local playButton = display.newText( sceneGroup, "Play", display.contentCenterX, 390, "media/arcadefont.ttf", 32 )
+	local playButton = display.newText( sceneGroup, "P lay", display.contentCenterX, 390, "media/arcadefont.ttf", 32 )
 	playButton:setFillColor( 0.82, 0.86, 1 )
 
-	local highScoresButton = display.newText( sceneGroup, "High Scores", display.contentCenterX, 430, "media/arcadefont.ttf", 32 )
+	local highScoresButton = display.newText( sceneGroup, "High  Scores", display.contentCenterX, 430, "media/arcadefont.ttf", 32 )
 	highScoresButton:setFillColor( 0.82, 0.86, 1 )
 
-	local howToPlayButton = display.newText(sceneGroup, "How To Play", display.contentCenterX, 470, "media/arcadefont.ttf", 32 )
+	local howToPlayButton = display.newText(sceneGroup, "How  To  P lay", display.contentCenterX, 470, "media/arcadefont.ttf", 32 )
 	howToPlayButton:setFillColor( 0.82, 0.86, 1 )
 
 	playButton:addEventListener( "tap", gotoGame )
