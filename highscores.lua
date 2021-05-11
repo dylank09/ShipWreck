@@ -39,8 +39,9 @@ local function savePeopleSaved()
 
 	if file then
 	  file:write( json.encode( peopleSavedTable ) )
-	  io.close( file )
+	  
 	end
+	io.close( file )
 end
 
 local function keyPressed( event )

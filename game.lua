@@ -5,10 +5,7 @@ local scene = composer.newScene()
 
 local json = require("json")
 
--- -----------------------------------------------------------------------------------
--- Code outside of the scene event functions below will only be executed ONCE unless
--- the scene is removed entirely (not recycled) via "composer.removeScene()"
--- -----------------------------------------------------------------------------------
+local widget = require("widget")
 
 local physics = require("physics")
 physics.start()
@@ -60,6 +57,44 @@ local dingSound
 local crashSound
 
 local boat
+
+-- ADMOB setup
+
+local admob = require("plugin.admob")
+
+local appID = "n/a"
+local adUnits = {}
+local platformName = system.getInfo("platform")
+local testMode = true
+local testModeButton
+local showTestWarning = true
+local iReady
+local bReady
+local rReady
+local bannerLine
+local oldOrientation
+
+if platformName == "Android" or platformName == "android" then
+  appID = "ca-app-pub-1014857154557988~1392609501"
+  adUnits = {
+    interstitial="ca-app-pub-1014857154557988/6910042957",
+  }
+else
+  print "Unsupported platform"
+end
+
+local function adListener( event )
+ 
+  if ( event.phase == "init" ) then  -- Successful initialization
+      -- Load an AdMob interstitial ad
+      admob.load( "interstitial", { adUnitId=adUnits.interstitial } )
+  end
+
+end
+
+admob.init( adListener, { appId=appID } )
+
+-- end of ADMOB setup
 
 local function updateText()
   if(died == false) then
@@ -313,35 +348,37 @@ end
 
 
 local function showScoreBox()
+
+  if(admob.isLoaded( "interstitial" )) then
+    admob.show("interstitial")
+  end
+
+  menuButton.isVisible = false
+  peopleSavedText.isVisible = false
+
   local box = display.newRoundedRect(gameOverGroup, display.contentCenterX, display.contentCenterY, 200, 150, 25)
   box:setFillColor( 0.01, 0.09, 0.211 )
-  -- box:setStrokeColor(0, 0, 0 )
   box.stroke = {1,1,1}
   box.strokeWidth = 8
 
   local score = display.newText(gameOverGroup, " " .. peopleSaved, display.contentCenterX, 200, "media/arcadefont.ttf", 40)
   local playAgain = display.newText(gameOverGroup, "play again", display.contentCenterX, 260, "media/arcadefont.ttf", 25)
   local highscores = display.newText(gameOverGroup, "highscores", display.contentCenterX, 290, "media/arcadefont.ttf", 25)
-  
+
   playAgain:addEventListener("tap", startNewGame)
   highscores:addEventListener("tap", gotoHighScores)
 
-  CI = display.newSprite(sheet_CI, sequence_CI)
-	transition.to(CI, {5000, alpha=1})
-	CI.x = display.contentCenterX+65
-	CI.y = display.contentCenterY-30
-	CI:scale(0.65, 0.65)
-	CI:play()
-
+  CI.isVisible = true
 end
 
 local function endGame()
   composer.setVariable("finalPeopleSaved", peopleSaved)
   died = true
   boatDie()
-  showScoreBox()
   audio.pause(1)
   audio.pause(2)
+  showScoreBox()
+  
 end
 
 local function die(event)           --function that deals with collision. the boat hit what and what to do as a result of that
@@ -406,7 +443,13 @@ function scene:create( event )
 
 	physics.pause()
 
-  CI = nil
+  CI = display.newSprite(sheet_CI, sequence_CI)
+	transition.to(CI, {5000, alpha=1})
+	CI.x = display.contentCenterX+65
+	CI.y = display.contentCenterY-30
+	CI:scale(0.65, 0.65)
+	CI:play()
+  CI.isVisible = false
 
   math.randomseed( os.time() )
 
@@ -500,6 +543,8 @@ function scene:show( event )
         audio.setVolume(1)
     end
 
+    admob.load( "interstitial", { adUnitId=adUnits.interstitial } )
+
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
     updateTimer = timer.performWithDelay(50, update, 0)
@@ -511,7 +556,7 @@ function scene:show( event )
 		Runtime:addEventListener("collision", die)
     Runtime:addEventListener( "key", keyPressed ) --for playing game on pc or laptop
     audio.play(musicTrack, {channel=1, loops=1})  --loops the game soundtrack. puts it on chanel one (nb)
-
+    
 	end
 end
 
@@ -561,7 +606,6 @@ function scene:destroy( event )
   end
   
 end
-
 
 -- -----------------------------------------------------------------------------------
 -- Scene event function listeners

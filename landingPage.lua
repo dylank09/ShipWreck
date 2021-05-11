@@ -37,7 +37,7 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		composer.gotoScene("game", {time=300, effect="crossFade"})
+		composer.gotoScene("game", {time=200, effect="crossFade"})
 	end
 end
 

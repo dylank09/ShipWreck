@@ -9,6 +9,10 @@ local sequence_CI = {name="normalRun", start=1, count=8, time=800, loopCount=0, 
 local CI
 local storyText
 
+local json = require("json")
+
+local fp = system.pathForFile("volume.json", system.DocumentsDirectory)
+
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -54,6 +58,14 @@ function scene:create( event )
 	CI:play()
 
 	audio.setVolume(1)
+
+	local file = io.open( fp, "w" )
+	
+	if file then
+		file:write( json.encode( 1 ) )
+	end
+
+	io.close(file)
 
 	local options = {
 		scene = sceneGroup,

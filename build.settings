@@ -20,31 +20,30 @@ settings =
 
 	orientation =
 	{
-		-- Supported values for orientation:
-		-- portrait, portraitUpsideDown, landscapeLeft, landscapeRight
 		default = "portrait",
 		supported = { "portrait", },
 	},
 
-	--
-	-- Android section
-	--
 	android =
 	{
+		applicationChildElements =
+        {
+            [[
+                <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID"
+                    android:value="ca-app-pub-1014857154557988~1392609501"/>
+            ]],
+        },
 
+		versionCode = "11",
 		usesPermissions =
 		{
 			"android.permission.INTERNET",
 			"android.permission.WRITE_EXTERNAL_STORAGE",
-			--"android.permission.ACCESS_FINE_LOCATION",
-			--"android.permission.ACCESS_COARSE_LOCATION",
+			"android.permission.ACCESS_NETWORK_STATE",
 
 		},
 	},
 
-	--
-	-- iOS section
-	--
 	iphone =
 	{
 		xcassets = "Images.xcassets",
@@ -52,7 +51,12 @@ settings =
 		{
 			UIStatusBarHidden = true,
 			UILaunchStoryboardName = "LaunchScreen",
+			
+            CFBundleDisplayName = "ShipWreck",
+            CFBundleName = "ShipWreck",
+			NSAppTransportSecurity = { NSAllowsArbitraryLoads=true },
 		},
+		
 	},
 
 	--
@@ -60,7 +64,7 @@ settings =
 	--
 	plugins =
 	{
-
+		["plugin.admob"] = { publisherId = "com.coronalabs" },
 	},
 
 	--
@@ -69,7 +73,7 @@ settings =
 	excludeFiles =
 	{
 		-- Exclude unnecessary files for each platform
-		all = { "Icon.png", "Icon-*dpi.png", "Images.xcassets", },
+		-- all = { "Icon.png", "Icon-*dpi.png", "Images.xcassets", },
 		android = { "LaunchScreen.storyboardc", },
 	},
 }
