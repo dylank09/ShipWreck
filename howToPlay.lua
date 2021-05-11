@@ -11,6 +11,8 @@ local json = require("json")
 
 local fp = system.pathForFile("volume.json", system.DocumentsDirectory)
 
+local firstText, secondText
+
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -66,25 +68,11 @@ function scene:create( event )
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
-	local background = display.newImageRect(sceneGroup, "media/howToPlay.png", 320, 600)
+	local background = display.newImageRect(sceneGroup, "media/water.png", 320, 600)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-  	local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+100, 500, "media/arcadefont.ttf", 25)
-	menuButton:setFillColor(0, 0, 0)
-	menuButton:addEventListener("tap", gotoMenu)
-
-	volumeOnOffButton = display.newText(sceneGroup, "", display.contentCenterX-80, 500, "media/arcadefont.ttf", 25)
-	volumeOnOffButton:setFillColor(0, 0, 0)
-	volumeOnOffButton:addEventListener("tap", volumeOnOff)
-
-	if(audio.getVolume() > 0) then
-		volumeOnOffButton.text = "Volume : ON"
-
-	else
-		volumeOnOffButton.text = "Volume : OFF"
-	end
-
+	
 end
 
 
@@ -100,6 +88,58 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		Runtime:addEventListener( "key", keyPressed )
+
+		local options1 = {
+			scene = sceneGroup,
+			text = "GOAL:\n AVOID   obstacles \n RESCUE   the   crew",
+			x = display.contentCenterX, 
+			y = 170, 
+			font = "media/arcadefont.ttf",
+			fontSize = 25,
+			align = "left"
+		}
+	
+		local options2 = {
+			scene = sceneGroup,
+			text = "Tap   or   swipe \n to   move   the   boat",
+			x = display.contentCenterX, 
+			y = 300, 
+			font = "media/arcadefont.ttf",
+			fontSize = 27,
+			align = "center"
+		}
+	
+		firstText = display.newText( options1 )
+	
+		secondText = display.newText( options2 )
+	
+		firstText:setFillColor( 0.82, 0.86, 1 )
+		secondText:setFillColor( 0.82, 0.86, 1 )
+
+		local arrows = display.newImageRect(sceneGroup, "media/arrows.png", 200, 200)
+		arrows.x = display.contentCenterX
+		arrows.y = display.contentHeight - 50
+
+		local boat = display.newImageRect(sceneGroup, "media/boat.png", 45, 110)
+		boat.x = display.contentCenterX
+		boat.y = display.contentHeight - 50
+	
+		local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+100, 500, "media/arcadefont.ttf", 25)
+		menuButton:setFillColor(0, 0, 0)
+		menuButton:addEventListener("tap", gotoMenu)
+	
+		volumeOnOffButton = display.newText(sceneGroup, "", display.contentCenterX-80, 500, "media/arcadefont.ttf", 25)
+		volumeOnOffButton:setFillColor(0, 0, 0)
+		volumeOnOffButton:addEventListener("tap", volumeOnOff)
+	
+		if(audio.getVolume() > 0) then
+			volumeOnOffButton.text = "Volume : ON"
+	
+		else
+			volumeOnOffButton.text = "Volume : OFF"
+		end
+	
+
 	end
 end
 
@@ -113,6 +153,9 @@ function scene:hide( event )
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
 		Runtime:removeEventListener("key", keyPressed)
+		firstText.isVisible = false
+		secondText.isVisible = false
+
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 		composer.removeScene("howToPlay") --cleans up

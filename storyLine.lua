@@ -21,7 +21,7 @@ local fp = system.pathForFile("volume.json", system.DocumentsDirectory)
 local function keyPressed( event )
 	local key = event.keyName
 	if((key == "enter" or key == "back" or key == "space" or key == "p")and event.phase == "down") then
-    gotoMenu()
+    gotoHowToPlay()
   end
   -- If the "back" key was pressed on Android, prevent it from backing out of the app
   if ( key == "back" ) then
@@ -69,11 +69,11 @@ function scene:create( event )
 
 	local options = {
 		scene = sceneGroup,
-		text = " A  scientific  expedition \n through  the  Norwegian  Sea \n has  gone  horribly  wrong. \n\n\n Help  Captain  Ishka \n rescue  the  survivors \n and  avoid  the  debris. \n\n\n\n It's  a  race  against  time !",
+		text = " A  scientific   expedition \n through   the   Norwegian   Sea \n has   gone   horribly   wrong. \n\n\n Help   Captain   Ishka \n rescue   the   survivors \n and   avoid   the   debris. \n\n\n\n It's   a   race   against   time !",
 		x = display.contentCenterX, 
 		y = 280, 
 		font = "media/arcadefont.ttf",
-		fontSize = 21,
+		fontSize = 20,
 		align = "left"
 	}
 
