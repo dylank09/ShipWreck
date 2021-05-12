@@ -89,10 +89,9 @@ local function adListener( event )
       -- Load an AdMob interstitial ad
       admob.load( "interstitial", { adUnitId=adUnits.interstitial } )
   end
-
 end
 
-admob.init( adListener, { appId=appID } )
+admob.init( adListener, { appId=appID, testMode=true } )
 
 -- end of ADMOB setup
 
@@ -120,90 +119,77 @@ local update = function() --this function is called on everytime the updateTimer
   end
 end
 
-local function checkForProximityObjects(yVal)
-  
-  for j = #peopleTable, 1, -1 do
-    local thisPerson = peopleTable[j]
-
-    if ( math.abs(thisPerson.y - yVal) <= 30 ) then
-      yVal = yVal - 30
-    end
-
-  end
-
-  for i = #debrisTable, 1, -1 do
-    local thisDebris = debrisTable[i]
-
-    if ( math.abs(thisDebris.y - yVal) <= 30 ) then
-      yVal = yVal - 30
-    end
-
-  end
-
-  return yVal
-  
-end
-
 local function createDebris()       -- spawn debris function. Also removes debris when gone too far off screen
-  local newDebris = display.newImageRect(boatGroup, "media/debris.png", 54, 50)
+  local newDebris = display.newImageRect(boatGroup, "media/debris.png", 52, 48)
 	table.insert(debrisTable, newDebris)
-  physics.addBody(newDebris, "dynamic", {radius=22, bounce=1})
+  physics.addBody(newDebris, "dynamic", {radius=21, bounce=1})
   newDebris.myName = "debris"
-  newDebris.alpha = 0.8
+  newDebris.alpha = 0.9
 
   local xVal = math.random(3)
-  local yVal
+  local yVal = math.random(6)
 
   if(xVal == 1) then   -- picks one of three different channels on the screen to travel on
     newDebris.x = 60
-    yVal = math.random(-450, -90)
-    yVal = checkForProximityObjects(yVal)
-    newDebris.y = yVal
   elseif(xVal == 2) then
     newDebris.x = 160
-    yVal = math.random(-470, -70)
-    yVal = checkForProximityObjects(yVal)
-    newDebris.y = yVal
-  elseif(xVal == 3) then
+  else
     newDebris.x = 260
-    yVal = math.random(-420, -100)
-    yVal = checkForProximityObjects(yVal)
-    newDebris.y = yVal
+  end
+
+  if(yVal == 1) then
+    newDebris.y = -136
+  elseif(yVal == 2) then
+    newDebris.y = -202
+  elseif(yVal == 3) then
+    newDebris.y = -268
+  elseif(yVal == 4) then
+    newDebris.y = -334
+  elseif(yVal == 5) then
+    newDebris.y = -400
+  else
+    newDebris.y = -466
   end
 
   newDebris:setLinearVelocity(0, velocity)   --no x axis velocity. only y axis velocity
-  newDebris:applyTorque(math.random(-1, 1)/2.5)  -- random amount of torque between -1 and 1
+  newDebris:applyTorque(math.random(-1, 1)/3.5)  -- random amount of torque between -1 and 1
 
 end
 
 local function createPerson()  --create a person function (similar to createDebris function) with the same channel choosing idea as above
   local newPerson = display.newImageRect(boatGroup, "media/person.png", 46,64)
 	table.insert(peopleTable, newPerson)
-  physics.addBody(newPerson, "dynamic", {radius=40, bounce=1, friction=1})
+  physics.addBody(newPerson, "dynamic", {radius=40, bounce=1})
   newPerson.myName = "person"
-  newPerson.alpha = 0.85
+  newPerson.alpha = 0.8
 
   local xVal = math.random(3)
-  local yVal
+  local yVal = math.random(6)
 
-  if(xVal == 1) then
+  if(xVal == 1) then   -- picks one of three different channels on the screen to travel on
     newPerson.x = 60
-    yVal = math.random(-420, -100)
-    yVal = checkForProximityObjects(yVal)
-    newPerson.y = yVal
   elseif(xVal == 2) then
     newPerson.x = 160
-    yVal = math.random(-470, -70)
-    yVal = checkForProximityObjects(yVal)
-    newPerson.y = yVal
-  elseif(xVal == 3) then
+  else
     newPerson.x = 260
-    yVal = math.random(-450, -90)
-    yVal = checkForProximityObjects(yVal)
-    newPerson.y = yVal
+  end
+
+  if(yVal == 1) then
+    newPerson.y = -136
+  elseif(yVal == 2) then
+    newPerson.y = -202
+  elseif(yVal == 3) then
+    newPerson.y = -268
+  elseif(yVal == 4) then
+    newPerson.y = -334
+  elseif(yVal == 5) then
+    newPerson.y = -400
+  else
+    newPerson.y = -466
   end
 
   newPerson:setLinearVelocity(0, velocity)
+  newPerson:applyTorque(math.random(-1, 1)/3.5)  -- random amount of torque between -1 and 1
 
 end
 
@@ -343,7 +329,7 @@ local function gotoHighScores()
 end
 
 local function boatDie(event)
-  transition.to( boat, { time=4560, y=1500 } ) -- when the boat hits debris, it will stay on the debris like as if it has crashed and is stuck on the debris
+  transition.to( boat, { time=4000, y=1500 } ) -- when the boat hits debris, it will stay on the debris like as if it has crashed and is stuck on the debris
 end          
 
 
@@ -362,8 +348,8 @@ local function showScoreBox()
   box.strokeWidth = 8
 
   local score = display.newText(gameOverGroup, " " .. peopleSaved, display.contentCenterX, 200, "media/arcadefont.ttf", 40)
-  local playAgain = display.newText(gameOverGroup, "play again", display.contentCenterX, 260, "media/arcadefont.ttf", 25)
-  local highscores = display.newText(gameOverGroup, "highscores", display.contentCenterX, 290, "media/arcadefont.ttf", 25)
+  local playAgain = display.newText(gameOverGroup, "p lay  again", display.contentCenterX, 260, "media/arcadefont.ttf", 25)
+  local highscores = display.newText(gameOverGroup, "high scores", display.contentCenterX, 290, "media/arcadefont.ttf", 25)
 
   playAgain:addEventListener("tap", startNewGame)
   highscores:addEventListener("tap", gotoHighScores)
@@ -543,7 +529,7 @@ function scene:show( event )
         audio.setVolume(1)
     end
 
-    admob.load( "interstitial", { adUnitId=adUnits.interstitial } )
+    -- admob.load( "interstitial", { adUnitId=adUnits.interstitial } )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen

@@ -39,9 +39,9 @@ local function savePeopleSaved()
 
 	if file then
 	  file:write( json.encode( peopleSavedTable ) )
-	  
+	  io.close( file )
 	end
-	io.close( file )
+	
 end
 
 local function keyPressed( event )
@@ -60,6 +60,10 @@ end
 
 function gotoMenu()
 	composer.gotoScene("menu", {time=400, effect="crossFade"})
+end
+
+local function gotoGame()
+	composer.gotoScene("game", {time=300, effect="crossFade"})
 end
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -97,7 +101,11 @@ function scene:create( event )
 		end
 	end
 
-  	local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX+110, 510, "media/arcadefont.ttf", 25)
+	local playButton = display.newText(sceneGroup, "Play", display.contentCenterX+110, 510, "media/arcadefont.ttf", 25)
+	playButton:setFillColor(0.82, 0.86, 1 )
+	playButton:addEventListener("tap", gotoGame)
+
+  	local menuButton = display.newText(sceneGroup, "Menu", display.contentCenterX-110, 510, "media/arcadefont.ttf", 25)
 	menuButton:setFillColor(0.82, 0.86, 1 )
 	menuButton:addEventListener("tap", gotoMenu)
 end

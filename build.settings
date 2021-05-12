@@ -34,13 +34,12 @@ settings =
             ]],
         },
 
-		versionCode = "11",
+		versionCode = "12",
 		usesPermissions =
 		{
 			"android.permission.INTERNET",
 			"android.permission.WRITE_EXTERNAL_STORAGE",
 			"android.permission.ACCESS_NETWORK_STATE",
-
 		},
 	},
 
