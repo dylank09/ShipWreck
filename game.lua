@@ -91,7 +91,7 @@ local function adListener( event )
   end
 end
 
-admob.init( adListener, { appId=appID, testMode=true } )
+admob.init( adListener, { appId=appID } )
 
 -- end of ADMOB setup
 
@@ -127,7 +127,7 @@ local function createDebris()       -- spawn debris function. Also removes debri
   newDebris.alpha = 0.9
 
   local xVal = math.random(3)
-  local yVal = math.random(6)
+  local yVal = math.random(5)
 
   if(xVal == 1) then   -- picks one of three different channels on the screen to travel on
     newDebris.x = 60
@@ -138,17 +138,15 @@ local function createDebris()       -- spawn debris function. Also removes debri
   end
 
   if(yVal == 1) then
-    newDebris.y = -136
+    newDebris.y = -70
   elseif(yVal == 2) then
-    newDebris.y = -202
+    newDebris.y = -140
   elseif(yVal == 3) then
-    newDebris.y = -268
+    newDebris.y = -210
   elseif(yVal == 4) then
-    newDebris.y = -334
-  elseif(yVal == 5) then
-    newDebris.y = -400
+    newDebris.y = -290
   else
-    newDebris.y = -466
+    newDebris.y = -360
   end
 
   newDebris:setLinearVelocity(0, velocity)   --no x axis velocity. only y axis velocity
@@ -361,10 +359,10 @@ local function endGame()
   composer.setVariable("finalPeopleSaved", peopleSaved)
   died = true
   boatDie()
-  audio.pause(1)
-  audio.pause(2)
   showScoreBox()
-  
+  audio.fade( { channel=1, time=1500, volume=0 } )
+  -- audio.pause(1)
+
 end
 
 local function die(event)           --function that deals with collision. the boat hit what and what to do as a result of that
@@ -541,6 +539,11 @@ function scene:show( event )
     Runtime:addEventListener( "enterFrame", moveBackground)
 		Runtime:addEventListener("collision", die)
     Runtime:addEventListener( "key", keyPressed ) --for playing game on pc or laptop
+    
+    if(audio.getVolume() > 0) then
+      audio.setVolume(1, {chanel=1})
+    end
+    
     audio.play(musicTrack, {channel=1, loops=1})  --loops the game soundtrack. puts it on chanel one (nb)
     
 	end

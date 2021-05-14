@@ -34,7 +34,7 @@ settings =
             ]],
         },
 
-		versionCode = "12",
+		versionCode = "14",
 		usesPermissions =
 		{
 			"android.permission.INTERNET",
